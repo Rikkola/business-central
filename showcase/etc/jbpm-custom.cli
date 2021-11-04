@@ -1,9 +1,5 @@
 embed-server --server-config=standalone.xml
 
-if (outcome != success) of /subsystem=security/security-domain=other/authentication=classic/login-module=org.kie.security.jaas.KieLoginModule:read-resource
-    /subsystem=security/security-domain=other/authentication=classic/login-module=org.kie.security.jaas.KieLoginModule:add(code=org.kie.security.jaas.KieLoginModule, flag=required, module=deployment.business-central.war)
-end-if
-
 if (outcome != success) of /system-property=org.kie.demo:read-resource
 	/system-property=org.kie.server.id:add(value="${org.kie.demo:true}")
 else
