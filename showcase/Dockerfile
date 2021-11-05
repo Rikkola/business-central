@@ -14,12 +14,14 @@ ENV KIE_SERVER_PROFILE standalone
 ENV JAVA_OPTS -Xms256m -Xmx2048m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=512m -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8
 
 ####### jBPM Workbench CUSTOM CONFIGURATION ############
-ADD etc/standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml
+ADD etc/application-users.properties $JBOSS_HOME/standalone/configuration/application-users.properties
+ADD etc/application-roles.properties $JBOSS_HOME/standalone/configuration/application-roles.properties
 ADD etc/jbpm-custom.cli $JBOSS_HOME/bin/jbpm-custom.cli
 
 # Added files are chowned to root user, change it to the jboss one.
 USER root
-RUN chown jboss:jboss $JBOSS_HOME/standalone/configuration/standalone.xml
+RUN chown jboss:jboss $JBOSS_HOME/standalone/configuration/application-users.properties && \
+chown jboss:jboss $JBOSS_HOME/standalone/configuration/application-roles.properties
 
 # Switchback to jboss user
 USER jboss
