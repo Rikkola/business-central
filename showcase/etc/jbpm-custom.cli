@@ -1,5 +1,50 @@
 embed-server --server-config=standalone.xml
 
+/subsystem=security:remove
+/core-service=management/security-realm=ApplicationRealm:remove
+
+/subsystem=elytron/filesystem-realm=KieRealm:add(path=kie-fs-realm-users)
+/subsystem=elytron/simple-role-decoder=from-roles-attribute:add(attribute=role)
+
+/subsystem=elytron/security-domain=ApplicationDomain:list-add(name=realms, index=0, value={realm=KieRealm, role-decoder=from-roles-attribute})
+/subsystem=elytron/security-domain=ApplicationDomain:write-attribute(name=default-realm, value=KieRealm)
+/subsystem=elytron/security-domain=ApplicationDomain:write-attribute(name=permission-mapper, value=default-permission-mapper)
+
+/subsystem=undertow/application-security-domain=other:add(security-domain=ApplicationDomain)
+
+/subsystem=elytron/http-authentication-factory=application-http-authentication:add(http-server-mechanism-factory=global,security-domain=ApplicationDomain,mechanism-configurations=[{mechanism-name=BASIC,mechanism-realm-configurations=[{realm-name=KieRealm}]}, {mechanism-name=FORM}])
+
+/subsystem=ejb3/service=remote:remove
+/subsystem=ejb3/service=remote:add(connector-ref=http-remoting-connector, thread-pool-name=default)
+/subsystem=ejb3/application-security-domain=other:add(security-domain=ApplicationDomain)
+
+/core-service=management/security-realm=KieRealm:add()
+/core-service=management/security-realm=KieRealm/server-identity=ssl:add(keystore-relative-to=jboss.server.config.dir, keystore-password=password)
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=admin)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=admin, clear={password="admin"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=admin, name=role, value=["admin", "analyst", "kiemgmt", "rest-all"])
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=krisv)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=krisv, clear={password="krisv"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=krisv, name=role, value=["admin", "analyst"])
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=john)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=john, clear={password="john"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=john, name=role, value=["analyst", "Accounting", "PM"])
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=sales-rep)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=sales-rep, clear={password="sales-rep"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=sales-rep, name=role, value=["analyst", "sales"])
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=katy)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=katy, clear={password="katy"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=katy, name=role, value=["analyst", "IT"])
+
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity(identity=jack)
+/subsystem=elytron/filesystem-realm=KieRealm:set-password(identity=jack, clear={password="jack"})
+/subsystem=elytron/filesystem-realm=KieRealm:add-identity-attribute(identity=jack, name=role, value=["analyst", "HR"])
+
 if (outcome != success) of /system-property=org.kie.demo:read-resource
 	/system-property=org.kie.server.id:add(value="${org.kie.demo:true}")
 else
