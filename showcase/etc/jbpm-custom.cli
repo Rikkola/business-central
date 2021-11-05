@@ -1,10 +1,10 @@
 embed-server --server-config=standalone.xml
 
-if (outcome != success) of /system-property=org.kie.demo:read-resource
-	/system-property=org.kie.server.id:add(value="${org.kie.demo:true}")
-else
-    /system-property=org.kie.demo:write-attribute(name=value,value="${org.kie.demo:true}")
-end-if
+# if (outcome != success) of /system-property=org.kie.demo:read-resource
+#	/system-property=org.kie.server.id:add(value="${org.kie.demo:true}")
+# else
+#    /system-property=org.kie.demo:write-attribute(name=value,value="${org.kie.demo:true}")
+# end-if
 
 if (outcome != success) of /system-property=org.kie.example:read-resource
 	/system-property=org.kie.example:add(value="${org.kie.example:true}")
