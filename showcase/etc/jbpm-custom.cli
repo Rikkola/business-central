@@ -29,6 +29,12 @@ embed-server --server-config=standalone.xml
 /core-service=management/security-realm=KieRealm:add()
 /core-service=management/security-realm=KieRealm/server-identity=ssl:add(keystore-relative-to=jboss.server.config.dir, keystore-password=password)
 
+/subsystem=remoting/http-connector=http-remoting-connector:remove
+/subsystem=remoting/http-connector=http-remoting-connector:add(connector-ref=default, security-realm=KieRealm)
+
+/subsystem=distributable-web:remove
+/subsystem=infinispan:remove
+
 if (outcome != success) of /system-property=org.kie.demo:read-resource
 	/system-property=org.kie.server.id:add(value="${org.kie.demo:true}")
 else
